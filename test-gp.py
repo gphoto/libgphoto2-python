@@ -48,6 +48,10 @@ class TestRunner(unittest.TestCase):
         pprint(gphoto2.library_version(False))
         pprint(gphoto2.library_version(True))
 
+    def test_050_foo(self):
+        import gphoto2
+        pprint(dir(gphoto2))
+
 
 if __name__ == '__main__':
     unittest.main()

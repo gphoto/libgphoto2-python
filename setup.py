@@ -20,12 +20,16 @@ from Pyrex.Distutils import build_ext
 
 setup(
   name = "python-gphoto2",
-  version = "@PACKAGE_VERSION@",
   ext_modules=[
     Extension(
       "gphoto2",
       [ "gphoto2.pyx" ],
       libraries = [ "gphoto2" ],
+      include_dirs = [
+        "@top_srcdir@/libgphoto2",
+        "@top_builddir@/libgphoto2",
+        "@top_srcdir@/libgphoto2_port",
+      ]
       )
     ],
   cmdclass = {'build_ext': build_ext}

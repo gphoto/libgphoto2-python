@@ -1,4 +1,14 @@
-EXTRA_DIST = setup.py.in gphoto2.pyx README INSTALL gptest.py test-gp.py
+SUBDIRS = m4m
+
+# -I auto-m4 -I m4m
+ACLOCAL_AMFLAGS = -I m4m
+
+EXTRA_DIST = \
+	gp-setup.py.in \
+	setup.py.in setup.py \
+	gphoto2.pyx \
+	gptest.py \
+	test-gp.py
 
 # CAUTION: The dependencies are still a little broken.
 #          Better run "make clean" before "make all" and "make check".
@@ -24,8 +34,8 @@ clean-local:
 all-local: $(PYTHON_LIB)
 
 $(PYTHON_LIB): gphoto2.c
-	CFLAGS="$(AM_CPPFLAGS) $(AM_CFLAGS) $(CPPFLAGS) $(CFLAGS)" $(PYTHON) setup.py build
-	$(PYTHON) setup.py install -O1 --skip-build --root "$(PWD)/test-install"
+	CFLAGS="$(AM_CPPFLAGS) $(AM_CFLAGS) $(CPPFLAGS) $(CFLAGS)" $(PYTHON) gp-setup.py build
+	$(PYTHON) gp-setup.py install -O1 --skip-build --root "$(PWD)/test-install"
 	touch $@
 
 # Ignore errors to help 'make distcheck'
@@ -40,10 +50,10 @@ uninstall-local:
 blubb-install-data-local: setup.py
 	@if test "x$(DESTDIR)" = "x"; then \
 		echo "$(PYTHON) setup.py install -O1 --skip-build"; \
-		$(PYTHON) setup.py install -O1 --skip-build; \
+		$(PYTHON) gp-setup.py install -O1 --skip-build; \
 	else \
 		echo "$(PYTHON) setup.py install -O1 --skip-build --root $(DESTDIR)"; \
-		$(PYTHON) setup.py install -O1 --skip-build --root "$(DESTDIR)"; \
+		$(PYTHON) gp-setup.py install -O1 --skip-build --root "$(DESTDIR)"; \
 	fi
 
 INSTALL_TESTS_ENVIRONMENT = env \

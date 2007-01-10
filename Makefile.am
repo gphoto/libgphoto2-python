@@ -8,10 +8,13 @@ EXTRA_DIST = \
 	setup.py.in setup.py \
 	gphoto2.pyx \
 	gptest.py \
-	test-gp.py
+	test-gp.py \
+	TODO
 
 # CAUTION: The dependencies are still a little broken.
 #          Better run "make clean" before "make all" and "make check".
+
+export LIBGPHOTO2_CFLAGS LIBGPHOTO2_LIBS
 
 if HAVE_PYTHON
 
@@ -20,10 +23,8 @@ BUILT_SOURCES = gphoto2.c
 PYTHON_LIB = test-install$(python_sitearchdir)/gphoto2.so
 
 gphoto2.c: gphoto2.pyx
-	pyrexc \
-		-I $(top_srcdir)/libgphoto2_port/libgphoto2_port \
-		-I $(top_srcdir)/libgphoto2 \
-		-I $(top_builddir)/libgphoto2 \
+	$(PYREXC) \
+		$(LIBGPHOTO2_CFLAGS) \
 		-o $@ \
 		$<
 
@@ -33,7 +34,7 @@ clean-local:
 
 all-local: $(PYTHON_LIB)
 
-$(PYTHON_LIB): gphoto2.c
+$(PYTHON_LIB): gphoto2.c gp-setup.py
 	CFLAGS="$(AM_CPPFLAGS) $(AM_CFLAGS) $(CPPFLAGS) $(CFLAGS)" $(PYTHON) gp-setup.py build
 	$(PYTHON) gp-setup.py install -O1 --skip-build --root "$(PWD)/test-install"
 	touch $@
@@ -47,12 +48,12 @@ uninstall-local:
 	rm -f $(DESTDIR)$(python_sitearchdir)/$$(basename "$(PYTHON_LIB)")
 
 # Unused
-blubb-install-data-local: setup.py
+blubb-install-data-local: gp-setup.py
 	@if test "x$(DESTDIR)" = "x"; then \
-		echo "$(PYTHON) setup.py install -O1 --skip-build"; \
+		echo "$(PYTHON) gp-setup.py install -O1 --skip-build"; \
 		$(PYTHON) gp-setup.py install -O1 --skip-build; \
 	else \
-		echo "$(PYTHON) setup.py install -O1 --skip-build --root $(DESTDIR)"; \
+		echo "$(PYTHON) gp-setup.py install -O1 --skip-build --root $(DESTDIR)"; \
 		$(PYTHON) gp-setup.py install -O1 --skip-build --root "$(DESTDIR)"; \
 	fi
 

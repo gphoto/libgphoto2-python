@@ -1,7 +1,7 @@
-Python language bindings for gphoto2 using PyRex (http://nz.cosc.canterbury.ac.nz/~greg/python/Pyrex/)
-
+========================================================================
+Python language bindings for libgphoto2[0] using PyRex[1]
 Copyright (C) 2003-2004 David PHAM-VAN -- david@ab2r.com
-
+========================================================================
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -15,3 +15,11 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+========================================================================
+
+
+References
+==========
+
+[0] http://gphoto.org/
+[1] http://nz.cosc.canterbury.ac.nz/~greg/python/Pyrex/

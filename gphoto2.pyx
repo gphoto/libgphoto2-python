@@ -1,3 +1,4 @@
+# gphoto2.pyx - libgphoto2 Python bindings using pyrex
 # Copyright (C) 2003-2004 David PHAM-VAN -- david@ab2r.com
 #
 # This program is free software; you can redistribute it and/or modify

@@ -1,4 +1,8 @@
+#!/usr/bin/python
+# gp-setup.py - python distutils script for use in automake-based build system
+#
 # Copyright (C) 2003-2004 David PHAM-VAN -- david@ab2r.com
+# Copyright (C) 2007 Hans Ulrich Niedermann <gp@n-dimensional.de>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -18,18 +22,50 @@ from distutils.core import setup
 from distutils.extension import Extension
 from Pyrex.Distutils import build_ext
 
+def my_include_dirs():
+    """create list of include dirs from LIBGPHOTO2_CFLAGS env var"""
+    import os
+    libgphoto2_include_dirs = []
+    for x in os.getenv("LIBGPHOTO2_CFLAGS").split():
+        if x[:3] == "-I/":
+            libgphoto2_include_dirs.append(x[2:])
+    return libgphoto2_include_dirs
+
+def my_lib_dirs():
+    """create list of library dirs (for rpath and -L) from LIBGPHOTO2_LIBS env var"""
+    import os
+    res = []
+    for x in os.getenv("LIBGPHOTO2_LIBS").split():
+        if x[:3] == "-L/":
+            res.append(x[2:])
+        elif x[-3:] == ".la" and os.path.isfile(x):
+            import re
+            r = re.compile("^libdir='(.*)'$")
+            for line in open(x,"r").readlines():
+                m = r.match(line)
+                if m:
+                    res.append(m.group(1))
+    ret = []
+    for x in res:
+        if x not in ret:
+            ret.append(x)
+    return ret
+
 setup(
-  name = "python-gphoto2",
+  name = "@PACKAGE_TARNAME@",
+  version = "@PACKAGE_VERSION@",
+  description = "@PACKAGE_NAME@",
+  maintainer_email = "@PACKAGE_BUGREPORT@",
+  url = "@URL_GPHOTO_HOME@",
+  license = "LGPL 2",
   ext_modules=[
     Extension(
       "gphoto2",
       [ "gphoto2.pyx" ],
+      runtime_library_dirs = my_lib_dirs(),
+      library_dirs = my_lib_dirs(),
       libraries = [ "gphoto2" ],
-      include_dirs = [
-        "@top_srcdir@/libgphoto2",
-        "@top_builddir@/libgphoto2",
-        "@top_srcdir@/libgphoto2_port",
-      ]
+      include_dirs = my_include_dirs(),
       )
     ],
   cmdclass = {'build_ext': build_ext}

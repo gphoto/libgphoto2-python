@@ -1,13 +1,30 @@
-Install libgphoto2-python using system's standard libgphoto2:
-=============================================================
+Two installation methods
+========================
 
-   $ pyrexc gphoto2.pyx
+There are two installation methods. One (A) uses the default
+libgphoto2 on the system. The other (B) can uses custom libgphoto2
+installations and thus is a little more complicated in standalone
+usage.
+
+However, (B) is also integrated into gphoto-suite and thus
+works with the libgphoto2 shipped with gphoto-suite.
+
+
+A) Install libgphoto2-python using system's standard libgphoto2:
+================================================================
+
    $ python setup.py build
    $ sudo python setup.py install
+   $ make installcheck
 
    $ python gptest.py
 
 
-Install libgphoto2-python using non-standard libgphoto2:
-========================================================
+B) Install libgphoto2-python using non-standard libgphoto2:
+===========================================================
 
+   $ mkdir __build && cd __build
+   $ ../configure LIBGPHOTO2_CFLAGS="-I/path/to/include" LIBGPHOTO2_LIBS="-L/path/to/lib"
+   $ make
+   $ sudo make install
+   $ make installcheck

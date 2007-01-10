@@ -1,4 +1,8 @@
+#!/usr/bin/python
+# setup.py - python distutils script for standalone (non-automake) use
+#
 # Copyright (C) 2003-2004 David PHAM-VAN -- david@ab2r.com
+# Copyright (C) 2007 Hans Ulrich Niedermann <gp@n-dimensional.de>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -19,8 +23,12 @@ from distutils.extension import Extension
 from Pyrex.Distutils import build_ext
 
 setup(
-  name = "python-gphoto2",
+  name = "@PACKAGE_TARNAME@",
   version = "@PACKAGE_VERSION@",
+  description = "@PACKAGE_NAME@",
+  maintainer_email = "@PACKAGE_BUGREPORT@",
+  url = "@URL_GPHOTO_HOME@",
+  license = "LGPL 2",
   ext_modules=[
     Extension(
       "gphoto2",

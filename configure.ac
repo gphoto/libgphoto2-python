@@ -24,6 +24,12 @@ m4m/Makefile
 gp-setup.py
 setup.py
 ],[
-chmod +x gp-setup.py setup.py
+dnl This relies on this code being called for each of the above files
+dnl with ac_file set to the filename.
+	if echo "$ac_file" | grep '.py$' > /dev/null; then
+		if test -f "$ac_file"; then
+			chmod +x "$ac_file"
+		fi
+	fi
 ])
 AC_OUTPUT

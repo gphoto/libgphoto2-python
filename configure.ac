@@ -8,6 +8,13 @@ AM_INIT_AUTOMAKE([-Wall -Werror gnu 1.9 dist-bzip2 check-news])
 GP_CHECK_SHELL_ENVIRONMENT
 GP_REFERENCES
 
+AC_MSG_ERROR([
+
+  This configure.ac needs to be migrated to automake's [AM_]PATH_PYTHON
+  URGENTLY!!!!!!
+
+])
+
 GP_PYTHON
 GP_CHECK_LIBRARY([LIBGPHOTO2], [libgphoto2], [>= 2.3.1.3.trunk])
 

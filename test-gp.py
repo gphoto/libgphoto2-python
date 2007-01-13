@@ -27,12 +27,6 @@ import modulefinder
 class TestRunner(unittest.TestCase):
 
     def setUp(self):
-        # FIXME: Find gphoto2.so file
-        destdir = 'test-install'
-        sitearch = os.getenv('python_sitearchdir')
-        if not sitearch:
-            sitearch = "/usr/lib/python%d.%d/site-packages" % sys.version_info[:2]
-        sys.path.append(os.path.abspath(os.path.join(destdir, sitearch)))
         import gphoto2
 
     def test_000_version_short(self):

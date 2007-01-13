@@ -11,16 +11,16 @@ EXTRA_DIST = \
 	test-gp.py \
 	TODO
 
-# CAUTION: The dependencies are still a little broken.
-#          Better run "make clean" before "make all" and "make check".
-
-export LIBGPHOTO2_CFLAGS LIBGPHOTO2_LIBS
-
 if HAVE_PYTHON
 
 BUILT_SOURCES = gphoto2.c
 
-PYTHON_LIB = test-install$(python_sitearchdir)/gphoto2.so
+pyexec_LTLIBRARIES = gphoto2.la
+gphoto2_la_CPPFLAGS = $(AM_CPPFLAGS) $(GP_PYTHON_CPPFLAGS) $(CPPFLAGS)
+gphoto2_la_CFLAGS = $(AM_CFLAGS) $(LIBGPHOTO2_CFLAGS) $(CPPFLAGS)
+gphoto2_la_SOURCES = gphoto2.c
+gphoto2_la_LDFLAGS = -avoid-version -module
+gphoto2_la_LIBADD = $(LIBGPHOTO2_LIBS)
 
 gphoto2.c: gphoto2.pyx
 	$(PYREXC) \
@@ -32,34 +32,9 @@ clean-local:
 	rm -rf test-install build
 	rm -f $(BUILT_SOURCES)
 
-all-local: $(PYTHON_LIB)
-
-$(PYTHON_LIB): gphoto2.c gp-setup.py
-	CFLAGS="$(AM_CPPFLAGS) $(AM_CFLAGS) $(CPPFLAGS) $(CFLAGS)" $(PYTHON) gp-setup.py build
-	$(PYTHON) gp-setup.py install -O1 --skip-build --root "$(PWD)/test-install"
-	touch $@
-
-# Ignore errors to help 'make distcheck'
-install-data-local: $(PYTHON_LIB)
-	-install -m 0755 -d $(DESTDIR)$(python_sitearchdir)
-	-install -m 0755 $< $(DESTDIR)$(python_sitearchdir)/
-
-uninstall-local:
-	rm -f $(DESTDIR)$(python_sitearchdir)/$$(basename "$(PYTHON_LIB)")
-
-# Unused
-blubb-install-data-local: gp-setup.py
-	@if test "x$(DESTDIR)" = "x"; then \
-		echo "$(PYTHON) gp-setup.py install -O1 --skip-build"; \
-		$(PYTHON) gp-setup.py install -O1 --skip-build; \
-	else \
-		echo "$(PYTHON) gp-setup.py install -O1 --skip-build --root $(DESTDIR)"; \
-		$(PYTHON) gp-setup.py install -O1 --skip-build --root "$(DESTDIR)"; \
-	fi
-
 INSTALL_TESTS_ENVIRONMENT = env \
-	python_sitearchdir=$(PWD)/test-install$(python_sitearchdir) \
-	LD_LIBRARY_PATH=$(DESTDIR)/$(libdir):$(LD_LIBRARY_PATH)
+	PYTHONPATH="$(DESTDIR)/$(pyexecdir)" \
+	LD_LIBRARY_PATH="$(DESTDIR)/$(libdir):$(LD_LIBRARY_PATH)"
 
 INSTALL_TESTS = test-gp.py
 INSTALLCHECK_DEPS = $(PYTHON_LIB)

@@ -1,21 +1,21 @@
 AC_PREREQ(2.59)
-AC_INIT([libgphoto2 python bindings], [2.3.1.3.trunk], [gphoto-devel@lists.sourceforge.net], [libgphoto2-python])
+AC_INIT([libgphoto2 python bindings], [2.3.1.4.trunk], [gphoto-devel@lists.sourceforge.net], [libgphoto2-python])
 AC_CONFIG_SRCDIR([gphoto2.pyx])
 dnl AC_CONFIG_MACRO_DIR([auto-m4])
 AC_CONFIG_AUX_DIR([auto-aux])
 AM_INIT_AUTOMAKE([-Wall -Werror gnu 1.9 dist-bzip2 check-news])
 
+AM_PROG_LIBTOOL
+
+dnl FIXME: What are our real Python version requirements?
+AM_PATH_PYTHON([2.2],, [:])
+AM_CONDITIONAL([HAVE_PYTHON], [ test "$PYTHON" != ":" ])
+dnl FIXME: Shouldn't this include dir for Python.h be defined by AM_PATH_PYTHON?
+AC_SUBST([GP_PYTHON_CPPFLAGS], ["-I/usr/include/python\$(PYTHON_VERSION)"])
+
 GP_CHECK_SHELL_ENVIRONMENT
 GP_REFERENCES
 
-AC_MSG_ERROR([
-
-  This configure.ac needs to be migrated to automake's [AM_]PATH_PYTHON
-  URGENTLY!!!!!!
-
-])
-
-GP_PYTHON
 GP_CHECK_LIBRARY([LIBGPHOTO2], [libgphoto2], [>= 2.3.1.3.trunk])
 
 AC_ARG_VAR([PYREXC], [Pyrex compiler])

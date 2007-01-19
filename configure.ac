@@ -16,13 +16,25 @@ AC_SUBST([GP_PYTHON_CPPFLAGS], ["-I/usr/include/python\$(PYTHON_VERSION)"])
 GP_CHECK_SHELL_ENVIRONMENT
 GP_REFERENCES
 
-GP_CHECK_LIBRARY([LIBGPHOTO2], [libgphoto2], [>= 2.3.1.3.trunk])
+GP_CHECK_LIBRARY([LIBGPHOTO2], [libgphoto2], [>= 2.3.1])
 
+dnl FIXME: Check that pyrexc actually works.
 AC_ARG_VAR([PYREXC], [Pyrex compiler])
 if test "x$PYREXC" = "x"; then
    AC_PATH_PROG([PYREXC],[pyrexc])
 fi
 AC_SUBST([PYREXC])
+AC_MSG_CHECKING([for pyrexc executable])
+AC_MSG_RESULT([${PYREXC}])
+if test "x$PYREXC" = "x"; then
+   AC_MSG_ERROR([Fatal: pyrexc not found.
+
+Get Pyrex from
+  * your system's packages (recommended)
+  * upstream at http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/
+])
+fi
+AM_CONDITIONAL([HAVE_PYREXC], [test "x$PYREXC" != "x"])
 
 
 AC_CONFIG_FILES([

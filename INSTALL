@@ -1,30 +1,40 @@
-Two installation methods
-========================
+Compiling and installing from SVN
+=================================
 
-There are two installation methods. One (A) uses the default
-libgphoto2 on the system. The other (B) can uses custom libgphoto2
-installations and thus is a little more complicated in standalone
-usage.
+If you are starting with a SVN checkout of libgphoto2-python, you will need
+a number of tools to initialize the build system:
 
-However, (B) is also integrated into gphoto-suite and thus
-works with the libgphoto2 shipped with gphoto-suite.
+   * autoconf
+   * automake
+   * libtool
+
+Then you can run "autoreconf -is" in the top-level libgphoto2-python
+directory, and after autoreconf is finished, you will have the same
+files a released source tarball has.
 
 
-A) Install libgphoto2-python using system's standard libgphoto2:
-================================================================
+Compiling and installing from a released source tarball
+=======================================================
+
+Compiling and installing also requires a number of tools:
+
+   * Python
+   * Pyrex
+   * C compiler
+
+For simple cases where you don't need any special compile options, you
+want to use the system's default libgphoto2 and you can afford to
+install into the system's standard Python site-packages directory,
+compiling and installing is as easy as:
 
    $ python setup.py build
    $ sudo python setup.py install
-   $ make installcheck
 
-   $ python gptest.py
+For more complicated build cases or out of soure tree builds, you can
+use the "configure" mechanism with all the options it offers:
 
-
-B) Install libgphoto2-python using non-standard libgphoto2:
-===========================================================
-
-   $ mkdir __build && cd __build
-   $ ../configure LIBGPHOTO2_CFLAGS="-I/path/to/include" LIBGPHOTO2_LIBS="-L/path/to/lib"
+   $ ./configure --prefix=... PYREXC=... LIBGPHOTO2_CFLAGS=... LIBGPHOTO2_LIBS=...
    $ make
-   $ sudo make install
-   $ make installcheck
+   $ make install       # possibly as root, depending on the prefix
+
+For more details on the available options, run "./configure --help".

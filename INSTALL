@@ -1,16 +1,20 @@
 Compiling and installing from SVN
 =================================
 
-If you are starting with a SVN checkout of libgphoto2-python, you will need
-a number of tools to initialize the build system:
+If you are starting with a SVN checkout of libgphoto2-python, you will
+need a number of tools to initialize the build system:
 
    * autoconf
    * automake
    * libtool
 
 Then you can run "autoreconf -is" in the top-level libgphoto2-python
-directory, and after autoreconf is finished, you will have the same
-files a released source tarball has.
+directory, and after autoreconf is finished, you will have almost the
+same files a released source tarball has.
+
+If starting from an SVN checkout and you intend to use the "python
+setup.py" installation mechanism described below, you need to run
+"./configure" once to create the setup.py script.
 
 
 Compiling and installing from a released source tarball
@@ -23,9 +27,9 @@ Compiling and installing also requires a number of tools:
    * C compiler
 
 For simple cases where you don't need any special compile options, you
-want to use the system's default libgphoto2 and you can afford to
-install into the system's standard Python site-packages directory,
-compiling and installing is as easy as:
+want to use the system's default libgphoto2 installation and you can
+afford to install into the system's standard Python site-packages
+directory, compiling and installing is as easy as:
 
    $ python setup.py build
    $ sudo python setup.py install

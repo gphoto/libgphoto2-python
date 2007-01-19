@@ -22,11 +22,13 @@ gphoto2_la_SOURCES = gphoto2.c
 gphoto2_la_LDFLAGS = -avoid-version -module
 gphoto2_la_LIBADD = $(LIBGPHOTO2_LIBS)
 
+if HAVE_PYREXC
 gphoto2.c: gphoto2.pyx
 	$(PYREXC) \
 		$(LIBGPHOTO2_CFLAGS) \
 		-o $@ \
 		$<
+endif
 
 clean-local:
 	rm -rf test-install build

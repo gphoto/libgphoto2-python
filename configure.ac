@@ -3,6 +3,7 @@ AC_INIT([libgphoto2 python bindings], [2.3.1.4.trunk], [gphoto-devel@lists.sourc
 AC_CONFIG_SRCDIR([gphoto2.pyx])
 dnl AC_CONFIG_MACRO_DIR([auto-m4])
 AC_CONFIG_AUX_DIR([auto-aux])
+dnl Note: Our *_PYTHON variable usage requires at least automake 1.8
 AM_INIT_AUTOMAKE([-Wall -Werror gnu 1.9 dist-bzip2 check-news])
 
 AM_PROG_LIBTOOL

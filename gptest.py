@@ -17,9 +17,18 @@
 
 import gphoto2
 
-print "GPhoto version "+gphoto2.version()
+print "GPhoto version (short):", ' '.join(gphoto2.library_version(False))
+print "GPhoto version (long):"
+for item in gphoto2.library_version(True):
+	print "   ", item
 
 #print dir(gphoto2)
+
+print """
+CAUTION:
+The following is still very much work in progress with no one working
+very much on it and may thus be in a non-working state or inconsistent.
+"""
 
 print("Creating camera...")
 cam=gphoto2.camera()

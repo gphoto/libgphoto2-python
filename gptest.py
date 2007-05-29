@@ -1,5 +1,6 @@
 # gptest.py - simple test/demo program for libgphoto2 bindings
 # Copyright (C) 2003-2004 David PHAM-VAN -- david@ab2r.com
+# Copyright (C) 2007 Hans Ulrich Niedermann <gp@n-dimensional.de>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by

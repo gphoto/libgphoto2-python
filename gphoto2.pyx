@@ -1017,8 +1017,8 @@ cdef class camera:
     check( gp_file_new( &cfile ) )
     check_unref( gp_camera_file_get ( self.camera, srcfolder, srcfilename, GP_FILE_TYPE_NORMAL, cfile, NULL ), cfile )
     check_unref( gp_file_get_data_and_size( cfile, &data, &size ), cfile )
-    gp_file_unref( cfile )
     dfile = open( destpath, 'w' )
     dfile.write( PyString_FromStringAndSize( data, size ) )
     dfile.close()
+    gp_file_unref( cfile )
 

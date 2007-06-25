@@ -402,7 +402,7 @@ cdef extern from "gphoto2/gphoto2-list.h":
 
   ctypedef struct CameraList:
     int count
-    s_entry entry[MAX_ENTRIES]
+    s_entry entry[1024]
     int ref_count
 
   int gp_list_new   (CameraList **list)
@@ -799,7 +799,7 @@ cdef class portInfo:
   cdef GPPortInfo info
 
   def __repr__(self):
-    if self.info.path:
+    if len(self.info.path):
       return "%s: %s" % (self.info.name, self.info.path)
     else:
       return self.info.name
@@ -843,6 +843,128 @@ cdef class cameraList:
     check(gp_list_get_name(self.liste, index, &name))
     check(gp_list_get_value(self.liste, index, &value))
     return (name, value)
+
+cdef class cameraWidget:
+  cdef CameraWidget *widget
+
+  def __new__(self):
+    self.widget = NULL;
+
+  def __dealloc__(self):
+    if self.widget != NULL:
+        check(gp_widget_unref(self.widget))
+
+  def __repr__(self):
+    if self.widget == NULL:
+      return "<null>"
+
+    return "%s:%s:%s:%s" % (self.label, self.name, self.info, str(self.value))
+      
+  def new(self, wtype, char *name):
+    if self.widget != NULL:
+        check(gp_widget_unref(self.widget))
+    check(gp_widget_new(wtype, name, &self.widget))
+    check(gp_widget_ref(self.widget))
+
+  def count(self):
+      if self.widget == NULL:
+          return 0
+      return gp_widget_count_children(self.widget)
+
+  def __getitem__(self, num):
+      cdef cameraWidget widget
+      widget = cameraWidget()
+      check(gp_widget_get_child(self.widget, num, &widget.widget))
+      check(gp_widget_ref(widget.widget))
+      return widget
+
+  property value:
+    def __get__(self):
+      cdef CameraWidgetType wtype
+      cdef char *type_string
+      cdef float type_float
+      cdef int type_int
+      
+      if self.widget == NULL:
+        return None
+
+      check(gp_widget_get_type(self.widget, &wtype))
+      if wtype == GP_WIDGET_MENU or \
+         wtype == GP_WIDGET_RADIO or \
+         wtype == GP_WIDGET_TEXT:
+          check(gp_widget_get_value(self.widget, &type_string))
+          return type_string
+
+      if wtype == GP_WIDGET_RANGE:
+          check(gp_widget_get_value(self.widget, &type_float))
+          return type_float
+
+      if wtype == GP_WIDGET_TOGGLE or wtype == GP_WIDGET_DATE:
+          check(gp_widget_get_value(self.widget, &type_int))
+          return type_int
+
+      return None
+
+    def __set__(self, value):
+      cdef CameraWidgetType wtype
+      cdef char *type_string
+      cdef float type_float
+      cdef int type_int
+      
+      if self.widget == NULL:
+        return
+
+      check(gp_widget_get_type(self.widget, &wtype))
+      if wtype == GP_WIDGET_MENU or \
+         wtype == GP_WIDGET_RADIO or \
+         wtype == GP_WIDGET_TEXT:
+          strval = str(value)
+          type_string = strval
+          check(gp_widget_set_value(self.widget, type_string))
+
+      if wtype == GP_WIDGET_RANGE:
+          type_float = float(value)
+          check(gp_widget_set_value(self.widget, &type_float))
+
+      if wtype == GP_WIDGET_TOGGLE or wtype == GP_WIDGET_DATE:
+          type_int = int(value)
+          check(gp_widget_set_value(self.widget, &type_int))
+
+  property label:
+    def __get__(self):
+      cdef char *label
+      if self.widget == NULL:
+          return None
+      check(gp_widget_get_label(self.widget, &label))
+      return label
+
+  property name:
+    def __get__(self):
+      cdef char *name
+      if self.widget == NULL:
+          return None
+      check(gp_widget_get_name(self.widget, &name))
+      return name
+
+  property info:
+    def __get__(self):
+      cdef char *info
+      if self.widget == NULL:
+          return None
+      check(gp_widget_get_info(self.widget, &info))
+      return info
+
+  property parent:
+    def __get__(self):
+      if self.widget == NULL:
+        return None
+
+      cdef cameraWidget widget
+      check(gp_widget_get_parent(self.widget, &widget.widget))
+      if widget.widget == NULL:
+          return None
+
+      return widget
 
 cdef class cameraAbilities:
   cdef CameraAbilities abilitie
@@ -975,6 +1097,16 @@ cdef class camera:
       check(gp_camera_get_summary(self.camera, &txt, NULL))
       return txt.text
 
+  property config:
+    def __get__(self):
+      cdef cameraWidget widget
+      widget = cameraWidget()
+      check(gp_camera_get_config(self.camera, &widget.widget, NULL))
+      return widget
+
+    def __set__(self, cameraWidget widget):
+      check(gp_camera_set_config(self.camera, widget.widget, NULL))
+
   def capture_image(self):
     cdef CameraFilePath path
     check(gp_camera_capture(self.camera, GP_CAPTURE_IMAGE, &path, NULL))
@@ -1021,4 +1153,3 @@ cdef class camera:
     dfile.write( PyString_FromStringAndSize( data, size ) )
     dfile.close()
     gp_file_unref( cfile )
-

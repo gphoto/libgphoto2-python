@@ -53,6 +53,7 @@ class TestRunner(unittest.TestCase):
         import gphoto2
         print("Creating camera...")
         self.cam = gphoto2.camera()
+        pprint(dir(self.cam))
 
     def test_007_long(self):
         import gphoto2

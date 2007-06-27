@@ -1153,3 +1153,6 @@ cdef class camera:
     dfile.write( PyString_FromStringAndSize( data, size ) )
     dfile.close()
     gp_file_unref( cfile )
+
+  def delete_file(self,char *folder,char *name):
+    check (gp_camera_file_delete( self.camera, folder, name, NULL ))

@@ -867,9 +867,31 @@ cdef class cameraWidget:
     check(gp_widget_ref(self.widget))
 
   def count(self):
-      if self.widget == NULL:
-          return 0
+      self._check()
       return gp_widget_count_children(self.widget)
+
+  def get_child_by_name(self, char *name):
+      cdef cameraWidget widget
+      self._check()
+      widget = cameraWidget()
+      check(gp_widget_get_child_by_name(self.widget, name, &widget.widget))
+      check(gp_widget_ref(widget.widget))
+      return widget
+
+  def get_child_by_label(self, char *label):
+      cdef cameraWidget widget
+      self._check()
+      widget = cameraWidget()
+      check(gp_widget_get_child_by_label(self.widget, label, &widget.widget))
+      check(gp_widget_ref(widget.widget))
+      return widget
+
+  def _check(self):
+      if not self.widget:
+          raise Exception('Uninitialized cameraWidget')
+            
+  def __len__(self):
+      return self.count()
 
   def __getitem__(self, num):
       cdef cameraWidget widget
@@ -954,10 +976,14 @@ cdef class cameraWidget:
       check(gp_widget_get_info(self.widget, &info))
       return info
 
+  property changed:
+    def __get__(self):
+      self._check()
+      return gp_widget_changed(self.widget)
+
   property parent:
     def __get__(self):
-      if self.widget == NULL:
-        return None
+      self._check()
 
       cdef cameraWidget widget
       check(gp_widget_get_parent(self.widget, &widget.widget))
@@ -1102,6 +1128,7 @@ cdef class camera:
       cdef cameraWidget widget
       widget = cameraWidget()
       check(gp_camera_get_config(self.camera, &widget.widget, NULL))
+      check(gp_widget_ref(widget.widget))
       return widget
 
     def __set__(self, cameraWidget widget):

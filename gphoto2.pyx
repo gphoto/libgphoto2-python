@@ -98,11 +98,9 @@ cdef extern from "gphoto2/gphoto2-port-info-list.h":
     GP_PORT_SERIAL
     GP_PORT_USB
 
-  ctypedef struct GPPortInfo:
-     GPPortType type
-     char name[64]
-     char path[64]
-     char library_filename[1024]
+  ctypedef struct _GPPortInfo:
+    char foo
+  ctypedef _GPPortInfo *GPPortInfo
 
   ctypedef struct GPPortInfoList
 
@@ -119,6 +117,10 @@ cdef extern from "gphoto2/gphoto2-port-info-list.h":
   int gp_port_info_list_lookup_name (GPPortInfoList *list, char *name)
 
   int gp_port_info_list_get_info (GPPortInfoList *list, int n, GPPortInfo *info)
+  int gp_port_info_get_name (GPPortInfo info, char **name)
+  int gp_port_info_set_name (GPPortInfo info, char *name)
+  int gp_port_info_get_path (GPPortInfo info, char **path)
+  int gp_port_info_set_path (GPPortInfo info, char *path)
 
 #------------------------------------------------------------------------------
 
@@ -736,7 +738,7 @@ cdef extern from "gphoto2/gphoto2-camera.h":
   int gp_camera_folder_list_files   (Camera *camera,  char *folder, CameraList *list, GPContext *context)
   int gp_camera_folder_list_folders (Camera *camera,  char *folder, CameraList *list, GPContext *context)
   int gp_camera_folder_delete_all   (Camera *camera,  char *folder, GPContext *context)
-  int gp_camera_folder_put_file     (Camera *camera,  char *folder, CameraFile *file, GPContext *context)
+  int gp_camera_folder_put_file     (Camera *camera,  char *folder, char *name, CameraFileType type, CameraFile *file, GPContext *context)
   int gp_camera_folder_make_dir     (Camera *camera,  char *folder, char *name, GPContext *context)
   int gp_camera_folder_remove_dir   (Camera *camera,  char *folder, char *name, GPContext *context)
 
@@ -799,10 +801,15 @@ cdef class portInfo:
   cdef GPPortInfo info
 
   def __repr__(self):
-    if len(self.info.path):
-      return "%s: %s" % (self.info.name, self.info.path)
+    cdef char* path
+    cdef char* name
+
+    gp_port_info_get_path (self.info,&path)
+    gp_port_info_get_name (self.info,&name)
+    if len(path):
+      return "%s: %s" % (name, path)
     else:
-      return self.info.name
+      return name
 
 cdef class ports:
   cdef GPPortInfoList *portInfoList
@@ -1165,8 +1172,7 @@ cdef class camera:
     cdef CameraFile *cfile
     check( gp_file_new( &cfile ) )
     check_unref( gp_file_open( cfile, srcpath ), cfile )
-    check_unref( gp_file_set_name( cfile, destfilename ), cfile )
-    check_unref( gp_camera_folder_put_file( self.camera, destfolder, cfile, NULL ), cfile )
+    check_unref( gp_camera_folder_put_file( self.camera, destfolder, destfilename, GP_FILE_TYPE_NORMAL, cfile, NULL ), cfile )
     gp_file_unref( cfile )
 
   def download_file_to(self,char *srcfolder,char *srcfilename,char *destpath):

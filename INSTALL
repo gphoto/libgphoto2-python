@@ -1,7 +1,7 @@
-Compiling and installing from SVN
-=================================
+Compiling and installing from git clone
+=======================================
 
-If you are starting with a SVN checkout of libgphoto2-python, you will
+If you are starting with a git clone of libgphoto2-python, you will
 need a number of tools to initialize the build system:
 
    * autoconf
@@ -12,7 +12,7 @@ Then you can run "autoreconf -is" in the top-level libgphoto2-python
 directory, and after autoreconf is finished, you will have almost the
 same files a released source tarball has.
 
-If starting from an SVN checkout and you intend to use the "python
+If starting from an git clone and you intend to use the "python
 setup.py" installation mechanism described below, you need to run
 "./configure" once to create the setup.py script.
 

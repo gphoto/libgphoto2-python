@@ -1,11 +1,12 @@
 AC_PREREQ(2.59)
 AC_INIT([libgphoto2 python bindings], [2.3.1.4.trunk], [gphoto-devel@lists.sourceforge.net], [libgphoto2-python])
 AC_CONFIG_SRCDIR([gphoto2.pyx])
-dnl AC_CONFIG_MACRO_DIR([auto-m4])
+AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([auto-aux])
 dnl Note: Our *_PYTHON variable usage requires at least automake 1.8
 AM_INIT_AUTOMAKE([-Wall -Werror gnu 1.9 dist-bzip2 check-news])
 
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AM_PROG_LIBTOOL
 
 dnl FIXME: What are our real Python version requirements?
@@ -40,7 +41,7 @@ AM_CONDITIONAL([HAVE_PYREXC], [test "x$PYREXC" != "x"])
 
 AC_CONFIG_FILES([
 Makefile
-m4m/Makefile
+gphoto-m4/Makefile
 gp-setup.py
 setup.py
 ],[

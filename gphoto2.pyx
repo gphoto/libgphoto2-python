@@ -814,7 +814,8 @@ cdef class portInfo:
 cdef class ports:
   cdef GPPortInfoList *portInfoList
 
-  def __new__(self):
+  # FIXME: Check proper use of __cinit__ (was __new__ originally)
+  def __cinit__(self):
     check(gp_port_info_list_new(&self.portInfoList))
 
   def __dealloc__(self):
@@ -835,7 +836,7 @@ cdef class ports:
 cdef class cameraList:
   cdef CameraList *liste
 
-  def __new__(self):
+  def __cinit__(self):
     check(gp_list_new(&self.liste))
 
   def __dealloc__(self):
@@ -854,7 +855,7 @@ cdef class cameraList:
 cdef class cameraWidget:
   cdef CameraWidget *widget
 
-  def __new__(self):
+  def __cinit__(self):
     self.widget = NULL;
 
   def __dealloc__(self):
@@ -1002,7 +1003,7 @@ cdef class cameraWidget:
 cdef class cameraAbilities:
   cdef CameraAbilities abilitie
 
-  def __new__(self):
+  def __cinit__(self):
     pass
 
   def __repr__(self):
@@ -1063,7 +1064,7 @@ cdef class cameraAbilities:
 cdef class abilities_list:
   cdef CameraAbilitiesList *abilitiesList
 
-  def __new__(self):
+  def __cinit__(self):
     check(gp_abilities_list_new(&self.abilitiesList))
 
   def __dealloc__(self):
@@ -1101,7 +1102,7 @@ class cameraeventtype:
 cdef class camera:
   cdef Camera *camera
 
-  def __new__(self):
+  def __cinit__(self):
     check(gp_camera_new(&self.camera))
 
   def init(self):

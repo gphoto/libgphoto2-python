@@ -6,6 +6,7 @@ AC_CONFIG_AUX_DIR([auto-aux])
 dnl Note: Our *_PYTHON variable usage requires at least automake 1.8
 AM_INIT_AUTOMAKE([-Wall -Werror gnu 1.9 dist-bzip2 check-news])
 
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AM_PROG_LIBTOOL
 
 dnl FIXME: What are our real Python version requirements?

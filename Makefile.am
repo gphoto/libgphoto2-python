@@ -1,7 +1,6 @@
-SUBDIRS = m4m
+SUBDIRS = gphoto-m4
 
-# -I auto-m4 -I m4m
-ACLOCAL_AMFLAGS = -I m4m
+ACLOCAL_AMFLAGS = -I m4 -I gphoto-m4
 
 EXTRA_DIST = \
 	gp-setup.py.in \
